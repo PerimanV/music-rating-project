@@ -1,0 +1,93 @@
+:root {
+    --primary-color: #08080a;
+    --secondary-color: #1153FC;
+    --accent-color: #3a3985;
+}
+
+.shadow {
+    box-shadow: 5px 5px 10px black;
+}
+
+.gradient {
+    background-image: linear-gradient(to bottom right, var(--secondary-color), var(--accent-color));
+}
+
+body {
+    background-color: var(--primary-color);
+    font-family: sans-serif;
+}
+
+#container {
+    padding: 16px;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    overflow: hidden;
+    background-color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.nav-container a {
+    color: var(--secondary-color);
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.logo-wrapper {
+    border-radius: 20px;
+}
+
+#logo {
+    width: 1vw;
+    height: 2vh;
+    margin-bottom: -2px;
+}
+
+form {
+    width: 300px;
+    height: 43px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+
+input {
+    all: unset;
+    font-size: 16px;
+    color: black;
+    height: 100%;
+    width: 100%;
+    padding: 6px 15px;
+}
+
+.column {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    padding: 10px;
+    overflow: hidden;
+    gap: 10px;
+}
+
+.album_cover {
+    width: 10vw;
+    height: 20vh;
+    border-radius: 20px;
+}
+
+.card {
+    border-radius: 20px;
+    padding: 10px;
+    text-align: center;
+}
+
+h3  {
+    color: var(--primary-color);
+}
