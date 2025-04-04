@@ -10,25 +10,20 @@
 <body>
     
         <div class="nav-container">
-            <a class="logo-wrapper shadow active" href="#" id="logo-title"><img src="./img/music.png" id="logo"> Music</a>
+            <a class="logo-wrapper shadow active" href="#" id="logo-title"><img src="./img/music.png" id="logo">Music</a>
             <div class="search shadow"> 
-                <form role="search" id="form" class="gradient">
+                <form role="search" id="search_form" class="gradient">
                     <input type="search" id="query" name="q" placeholder="Search...">
+                    <button type="submit" id="search_btn"><img src="./img/search.png"> </button>
                 </form>
             </div>
         </div>
     
 
-        <div clas="row">
-            <div class="column">
-                <div class="card shadow gradient">
-                    <img src="./img/album_cover.png" class="album_cover">
-                    <h3>Music Title</h3>
-                </div>
-            </div>
+        <div class="row" id="music-container">
+
         </div>
 
-    
-
+        <script src="script.js"></script>
 </body>
 </html>
