@@ -1,5 +1,5 @@
-const clientId= "b3f43e0d8e6c4c6cbe86ed9abed26e04";
-const redirectUri = "http://127.0.0.1:5500/src/"; // Replace with your redirect URI
+const clientId = "b3f43e0d8e6c4c6cbe86ed9abed26e04";
+const redirectUri = "http://127.0.0.1:5500/"; // Replace with your redirect URI
 const authEndpoint = "https://accounts.spotify.com/authorize";
 const scopes = ["user-read-private", "user-read-email"];
 
@@ -25,6 +25,7 @@ if (!accessToken) {
 } else {
     console.log("Access Token:", accessToken);
 }
+
 async function searchSongs(query) {
     if (!accessToken) {
         console.error("Access token is missing. Please authenticate first.");
@@ -55,12 +56,8 @@ function displaySongs(songs) {
     const musicContainer = document.getElementById("music-container");
     musicContainer.innerHTML = ""; // Clear previous results
 
-
     songs.forEach((track) => {
-        // if (!track.preview_url) return; // Skip if no preview URL
-
         const songCard = document.createElement("div");
-        
 
         songCard.innerHTML = `
         <div class="card shadow gradient">
@@ -68,12 +65,42 @@ function displaySongs(songs) {
             <h3>${track.name}</h3>
             <p>${track.artists.map(artist => artist.name).join(", ")}</p>
             <a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(track.name + ' ' + track.artists[0].name)}" target="_blank">Listen on YouTube</a>
-            <button class="rate" onclick="rateSong('${track.id}, 5')">Rate 5 ⭐</button>
+            <div class="star-rating">
+                <span class="star" data-value="1">&#9733;</span>    
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <p>Your Rating: <span class="rating-value">0</span> stars</p>
         </div>
         `;
 
-        musicContainer.appendChild(songCard); // Append the song card to the container
+        musicContainer.appendChild(songCard); 
 
+
+        //song rating
+        const stars = songCard.querySelectorAll('.star');
+        const ratingValue = songCard.querySelector('.rating-value');
+
+        
+        function onStarClick(event) {
+            const rating = event.target.getAttribute('data-value');
+            ratingValue.textContent = rating; 
+
+            // if the star is clicked, set the rating for the song
+            stars.forEach(star => {
+                if (star.getAttribute('data-value') <= rating) {
+                    star.classList.add('selected');
+                } else {
+                    star.classList.remove('selected');
+                }
+            });
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('click', onStarClick);
+        });
     });
 
     console.log("Songs displayed successfully.");
@@ -84,7 +111,3 @@ document.getElementById("search_form").addEventListener("submit", (event) => {
     const query = document.getElementById("query").value.trim();
     searchSongs(query); // Call the search function with the query
 });
-
-function rateSong(songId, rating) {
-    console.log(`Rated song ${songId} with ${rating} stars`);
-}

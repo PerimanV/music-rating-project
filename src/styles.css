@@ -4,6 +4,13 @@
     --accent-color: #3a3985;
 }
 
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: #000 !important;
+  border-radius: inherit !important;
+}
+
 .shadow {
     box-shadow: 5px 5px 10px black;
 }
@@ -83,14 +90,6 @@ input {
     height: 20px;
 }
 
-.column {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    padding: 10px;
-    overflow: hidden;
-    gap: 10px;
-}
 
 .album_cover {
     width: 10vw;
@@ -123,14 +122,17 @@ input {
     color: var(--primary-color);
 }
 
-.rate {
-    margin-top: 10px;
-    background-color: rgba(0, 0, 0, 0.541);
-    border: 1px solid var(--secondary-color);
-    color: yellow;
-    border-radius: 20px;
-    padding: 10px;
+.star-rating {
+    font-size: 2rem;
     cursor: pointer;
+}
+
+.star {
+    color: gray;
+}
+
+.star:hover, .star.selected {
+    color: gold;
 }
 
 h3  {
