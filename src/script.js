@@ -63,7 +63,7 @@ function displaySongs(songs) {
         <div class="card shadow gradient">
             <img src="${track.album.images[0].url}" class="album_cover" alt="Album Cover">
             <h3>${track.name}</h3>
-            <p>${track.artists.map(artist => artist.name).join(", ")}</p>
+            <p><u>${track.artists.map(artist => artist.name).join(", ")}</u></p>
             <a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(track.name + ' ' + track.artists[0].name)}" target="_blank">Listen on YouTube</a>
             <div class="star-rating">
                 <span class="star" data-value="1">&#9733;</span>    
@@ -83,7 +83,7 @@ function displaySongs(songs) {
         const stars = songCard.querySelectorAll('.star');
         const ratingValue = songCard.querySelector('.rating-value');
 
-        
+
         function onStarClick(event) {
             const rating = event.target.getAttribute('data-value');
             ratingValue.textContent = rating; 
@@ -95,6 +95,28 @@ function displaySongs(songs) {
                 } else {
                     star.classList.remove('selected');
                 }
+            });
+
+            const trackId = track.id;
+            const trackName = track.name;
+
+            fetch('http://localhost:5500/api/rating', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    trackId,
+                    trackName,
+                    rating: Number(rating)
+                })
+            }) 
+            .then(res => res.json())
+            .then(data => {
+                console.log('Rating saved:', data);
+            })
+            .catch(err => {
+                console.error('Error saving rating:', err);
             });
         }
 
