@@ -1,4 +1,3 @@
-import { time } from 'discord.js';
 import mongoose from 'mongoose';
 
 const ratingSchema = new mongoose.Schema({
@@ -17,7 +16,7 @@ const ratingSchema = new mongoose.Schema({
     },
     userId: {
         type: String,
-        required: false,
+        required: true,
     },
     timestamp: {
         type: Date,
