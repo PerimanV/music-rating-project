@@ -135,6 +135,15 @@ input {
     color: gold;
 }
 
+@keyframes flash {
+    0% { color: yellow; }
+    100% { color: transparent; }
+  }
+  
+  .flash {
+    animation: flash 0.5s ease;
+  }
+
 h3  {
     color: var(--primary-color);
 }

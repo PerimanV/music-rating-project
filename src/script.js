@@ -1,5 +1,5 @@
 const clientId = "b3f43e0d8e6c4c6cbe86ed9abed26e04";
-const redirectUri = "http://127.0.0.1:5500/"; // Replace with your redirect URI
+const redirectUri = "https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/"; // Replace with your redirect URI
 const authEndpoint = "https://accounts.spotify.com/authorize";
 const scopes = ["user-read-private", "user-read-email"];
 
@@ -77,20 +77,23 @@ async function searchSongs(query) {
         const data = await response.json();
         const songs = data.tracks.items;
 
-        const ratingRes = await fetch(`http://localhost:5500/api/ratings/user/${spotifyUserId}`);
+        //fetch rating for user for each song
+        const ratingRes = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/ratings/user/${spotifyUserId}`);
         const ratings = await ratingRes.json();
 
-        console.log("Search Response:", data); // Debugging
-        console.log("searching for", query);
 
-        displaySongs(songs,ratings);
+
+        //get average rating from all users for each song
+        const averageRatingMap = await displayAverageRatings(songs);
+
+        displaySongs(songs,ratings,averageRatingMap);
 
     } catch (error) {
         console.error("Error fetching songs:", error);
     }
 }
 
-async function displaySongs(songs, ratings = []) {
+async function displaySongs(songs, ratings = [], avgRatingMap) {
     const musicContainer = document.getElementById("music-container");
     musicContainer.innerHTML = ""; // Clear previous results
 
@@ -113,7 +116,7 @@ async function displaySongs(songs, ratings = []) {
                 <span class="star" data-value="4">&#9733;</span>
                 <span class="star" data-value="5">&#9733;</span>
             </div>
-            <p>Your Rating: <span class="rating-value">0</span> stars</p>
+            <p>Average Rating: <span class="rating-value">0</span> stars</p>
         </div>
         `;
         musicContainer.appendChild(songCard,track); 
@@ -122,13 +125,11 @@ async function displaySongs(songs, ratings = []) {
         //song rating
         const stars = songCard.querySelectorAll('.star');
         const ratingValue = songCard.querySelector('.rating-value');
-        
+
 
         // find a rating that matches the song id if star rating  is less than or equal to the saved rating, add the selected class
         const savedRating = ratings.find(rating => rating.trackId === track.id)
         if (savedRating) {
-            ratingValue.textContent = savedRating.rating; // Set the rating value in the UI
-
             stars.forEach(star => { 
                 if (star.getAttribute('data-value') <= savedRating.rating) {
                     star.classList.add('selected');
@@ -136,18 +137,31 @@ async function displaySongs(songs, ratings = []) {
                     star.classList.remove('selected');
                 }
             });
+        };
+
+
+        //average rating display
+        const avg = avgRatingMap[track.id];
+        let avgText;
+        if (avg !== null) {
+            avgText = parseFloat(avg).toFixed(1);
         }
+        else {
+            avgText = "No rating";
+        }
+        ratingValue.textContent = avgText;
+
+
        
 
-        function onStarClick(event) {
+        async function onStarClick(event) {
             const rating = event.target.getAttribute('data-value');
-            ratingValue.textContent = rating;
 
             stars.forEach(star => {
                 star.classList.toggle('selected', star.getAttribute('data-value') <= rating);
             });
 
-            fetch('http://localhost:5500/api/rating', {
+            await fetch('https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -156,10 +170,17 @@ async function displaySongs(songs, ratings = []) {
                     rating: Number(rating),
                     userId: spotifyUserId
                 })
-            })
-            .then(res => res.json())
-            .then(data => console.log('Rating saved:', data))
-            .catch(err => console.error('Error saving rating:', err));
+            });
+            
+            // Refresh average
+            const avgResponse = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating/average/${track.id}`);
+            const { averageRating } = await avgResponse.json();
+            ratingValue.textContent = parseFloat(averageRating).toFixed(1);
+
+            ratingValue.classList.add('flash');
+            setTimeout(() => {
+                ratingValue.classList.remove('flash');
+            }, 500);
         }
 
         stars.forEach(star => star.addEventListener('click', onStarClick));
@@ -168,29 +189,20 @@ async function displaySongs(songs, ratings = []) {
     console.log("Songs displayed successfully.");
 }
 
-async function displayUserRatings(UserId,songCard,track) {
-    try {
-        const response = await fetch(`http://localhost:5500/api/ratings/user/${UserId}`);
-        const data = await response.json();
+async function displayAverageRatings(songs) {
 
-        console.log("User Ratings Response:", data); // Debugging
+    const trackIds = songs.map(track => track.id);
+    const avgRes = await fetch('https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating/averages/bulk', {
 
-        if (response.ok) {
-            console.log("User Ratings:", data.rating); // Debugging
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trackIds })
 
-            data.forEach(rating => {
-                const songCard = document.getElementById(track.id);
-                const ratingElement = songCard.querySelector('.rating-value');
-                ratingElement.textContent = rating.rating; // Set the rating value in the UI
-            });
-        }
-        else {
-            throw new Error("Error fetching user ratings: ", data.message);
-        }
-        }
-    catch (err) {
-            console.error("Error fetching user ratings2: ", err);
-        }
+    });
+
+    const averageRatingMap = await avgRes.json();
+    
+    return averageRatingMap;
 }
 
 

@@ -37,17 +37,6 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD
     res.sendFile(__dirname);
   });
 
-// // get all ratings route
-// app.get('/api/ratings', async (req, res) => {
-//   try {
-//     const ratings = await Rating.find({});
-//     res.status(200).json(ratings);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Database error' });
-//   }
-
-// });
 
 // get all ratings for a user route
 app.get('/api/ratings/user/:userId', async (req,res) => {
@@ -62,6 +51,76 @@ app.get('/api/ratings/user/:userId', async (req,res) => {
         res.status(500).json({ error: 'Database error' });
       }
 
+});
+
+
+//get average rating for each song route
+app.get('/api/rating/average/:trackId', async (req, res) => {
+  const { trackId } = req.params;
+
+  try {
+    const ratings = await Rating.find({ trackId });
+
+    if (!ratings.length) {
+      return res.status(404).json({ error: 'Rating not found' });
+    }
+
+    let sum = 0;
+    for (let i = 0; i < ratings.length; i++) {
+      sum += ratings[i].rating;
+    }
+
+    const averageRating = sum / ratings.length;
+
+    return res.status(200).json({ averageRating });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Database error' });
+  }
+});
+
+
+//bulk find average ratings route
+app.post('/api/rating/averages/bulk', async (req,res) => {
+  const { trackIds } = req.body;
+
+  if (!trackIds) {
+    return res.status(400).json({ error: 'trackIds must be an array' });
+  }
+
+  try {
+    const ratings = await Rating.find({ trackId: { $in: trackIds } });
+
+    const ratingMap = {};
+    for (const trackId of trackIds) {
+      let sum = 0;
+      let count = 0;
+
+      for (const rating of ratings) {
+        if (rating.trackId === trackId) {
+          sum += rating.rating;
+          count++;
+        }
+      }
+
+      let avg;
+      if (count > 0) {
+        avg = sum / count;
+      }
+      else {
+        avg = null;
+      }
+      
+      ratingMap[trackId] = avg;
+    }
+
+
+    res.json(ratingMap);
+
+  }catch (err) {
+    console.error(err);
+    res.status(500).json({ errror: 'Error calculating averages' });
+  }
 });
 
 
