@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "movie-project",
   "version": "1.0.0",
   "description": "Music app that lets you preview and rate songs using spotify api",

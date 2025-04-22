@@ -37,6 +37,22 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD
     res.sendFile(__dirname);
   });
 
+  //health check
+  app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+  });
+
+
+
+  app.get('/api/ratings/all', async (req, res) => {
+    try {
+      const ratings = await Rating.find({});
+      res.status(200).json(ratings);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Database error' });
+    }
+  });
 
 // get all ratings for a user route
 app.get('/api/ratings/user/:userId', async (req,res) => {

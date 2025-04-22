@@ -52,7 +52,10 @@ else {
     fetchUserProfile(accessToken)
         .then(userId => {
             spotifyUserId = userId;
+            console.log("Spotify User ID:", spotifyUserId); // Debugging
+            loadRatedSongs(spotifyUserId); // Load rated songs after authentication
         });
+        
 
 }
 
@@ -153,7 +156,7 @@ async function displaySongs(songs, ratings = [], avgRatingMap) {
 
 
        
-
+        // Add event listener for star rating
         async function onStarClick(event) {
             const rating = event.target.getAttribute('data-value');
 
@@ -205,7 +208,49 @@ async function displayAverageRatings(songs) {
     return averageRatingMap;
 }
 
+async function loadRatedSongs(spotifyUserId) {
+    if (!accessToken || !spotifyUserId) {
+        console.error("Failed to authenticate user.");
+        return;
+    }
 
+    try {
+            const ratingsRes = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/ratings/user/${spotifyUserId}`);
+            const ratings = await ratingsRes.json();
+
+            if (!ratings.length) {
+                document.getElementById("music-container").innerHTML = "<p>You haven't rated any songs yet.</p>";
+                return;
+            };
+
+            const trackIds = ratings.map(rating => rating.trackId);
+
+            const chunks = [];
+            for (let i = 0; i< ratings.length; i += 50) {
+                const chunk = trackIds.slice(i, i + 50);
+                const chunkRes = await fetch(`https://api.spotify.com/v1/tracks?ids=${chunk.join(',')}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+                const chunkData = await chunkRes.json();
+                chunks.push(...chunkData.tracks);
+        }
+
+        const avgRes = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating/averages/bulk`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ trackIds })
+        });
+        const averageRatingMap = await avgRes.json();
+
+        displaySongs(chunks, ratings, averageRatingMap);
+    } catch (error) {
+        console.error("Error loading rated songs:", error);
+    };
+};
+
+// search
 document.getElementById("search_form").addEventListener("submit", (event) => {
     event.preventDefault(); // Prevent form submission
     const query = document.getElementById("query").value.trim();
