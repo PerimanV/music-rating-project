@@ -45,8 +45,10 @@ async function fetchUserProfile(token) {
 let accessToken = getAccessToken();
 let spotifyUserId = null; 
 
+//load the homepage if the user is authenticated
 if (!accessToken) {
-    document.body.innerHTML = `<button onclick="authenticateUser()">Login with Spotify</button>`;
+    document.getElementById("center-button").style.display = "flex"; 
+    document.getElementById("homepage-load").style.display = "none"; 
 } 
 else {
     fetchUserProfile(accessToken)
@@ -54,6 +56,9 @@ else {
             spotifyUserId = userId;
             console.log("Spotify User ID:", spotifyUserId); // Debugging
             loadRatedSongs(spotifyUserId); // Load rated songs after authentication
+            document.getElementById("sort-select").addEventListener("change", () => {
+                loadRatedSongs(spotifyUserId);
+            });
         });
         
 
@@ -89,6 +94,9 @@ async function searchSongs(query) {
         //get average rating from all users for each song
         const averageRatingMap = await displayAverageRatings(songs);
 
+        //hide sorting dropdown when searching
+        document.getElementById("sort-options").style.display = "none"; 
+
         displaySongs(songs,ratings,averageRatingMap);
 
     } catch (error) {
@@ -100,96 +108,114 @@ async function displaySongs(songs, ratings = [], avgRatingMap) {
     const musicContainer = document.getElementById("music-container");
     musicContainer.innerHTML = ""; // Clear previous results
 
-    for (const track of songs) {
-        const songCard = document.createElement("div");
+    musicContainer.classList.add("fade-out");
+    
+    setTimeout(() => {
 
-
-        console.log ("Track ID:", track.id); // Debugging
-
-        songCard.innerHTML = `
-        <div id="${track.id}" class="card shadow gradient">
-            <img src="${track.album.images[0].url}" class="album_cover" alt="Album Cover">
-            <h3>${track.name}</h3>
-            <p><u>${track.artists.map(artist => artist.name).join(", ")}</u></p>
-            <a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(track.name + ' ' + track.artists[0].name)}" target="_blank">Listen on YouTube</a>
-            <div class="star-rating">
-                <span class="star" data-value="1">&#9733;</span>    
-                <span class="star" data-value="2">&#9733;</span>
-                <span class="star" data-value="3">&#9733;</span>
-                <span class="star" data-value="4">&#9733;</span>
-                <span class="star" data-value="5">&#9733;</span>
+        for (const track of songs) {
+            const songCard = document.createElement("div");
+    
+    
+            console.log ("Track ID:", track.id); // Debugging
+    
+            songCard.innerHTML = `
+            <div id="${track.id}" class="card shadow gradient">
+                <img src="${track.album.images[0].url}" class="album_cover" alt="Album Cover">
+                <h3>${track.name}</h3>
+                <p id="artist-names"><u>${track.artists.map(artist => artist.name).join(", ")}</u></p>
+                <a class="spotify-link" href="https://open.spotify.com/track/${track.id}" target="_blank">Listen on Spotify</a>
+                <div class="star-rating">
+                    <span class="star" data-value="1">&#9733;</span>    
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                </div>
+                <p id="avg-rating">Average Rating: <span class="rating-value">0</span> stars</p>
             </div>
-            <p>Average Rating: <span class="rating-value">0</span> stars</p>
-        </div>
-        `;
-        musicContainer.appendChild(songCard,track); 
+            `;
+            musicContainer.appendChild(songCard,track); 
+    
+    
+            //song rating
+            const stars = songCard.querySelectorAll('.star');
+            const ratingValue = songCard.querySelector('.rating-value');
+    
+    
+            // find a rating that matches the song id if star rating  is less than or equal to the saved rating, add the selected class
+            const savedRating = ratings.find(rating => rating.trackId === track.id)
+            if (savedRating) {
+                stars.forEach(star => { 
+                    if (star.getAttribute('data-value') <= savedRating.rating) {
+                        star.classList.add('selected');
+                    } else {
+                        star.classList.remove('selected');
+                    }
+                });
+            };
+    
+    
+            //average rating display
+            const avg = avgRatingMap[track.id];
+            let avgText;
+            if (avg !== null) {
+                avgText = parseFloat(avg).toFixed(1);
+            }
+            else {
+                avgText = "No rating";
+            }
+            ratingValue.textContent = avgText;
+    
+    
+           
+            // Add event listener for star rating
+            async function onStarClick(event) {
+                const rating = event.target.getAttribute('data-value');
+                console.log("Rating selected:", rating);
+    
+                stars.forEach(star => {
+                    star.classList.toggle('selected', star.getAttribute('data-value') <= rating);
+                });
+    
+                await fetch('https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        trackId: track.id,
+                        trackName: track.name,
+                        rating: Number(rating),
+                        userId: spotifyUserId
+                    })
+                });
+                
+                // Refresh average
+                const avgResponse = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating/average/${track.id}`);
+                const { averageRating } = await avgResponse.json();
+                ratingValue.textContent = parseFloat(averageRating).toFixed(1);
+    
 
 
-        //song rating
-        const stars = songCard.querySelectorAll('.star');
-        const ratingValue = songCard.querySelector('.rating-value');
-
-
-        // find a rating that matches the song id if star rating  is less than or equal to the saved rating, add the selected class
-        const savedRating = ratings.find(rating => rating.trackId === track.id)
-        if (savedRating) {
-            stars.forEach(star => { 
-                if (star.getAttribute('data-value') <= savedRating.rating) {
-                    star.classList.add('selected');
-                } else {
-                    star.classList.remove('selected');
-                }
-            });
-        };
-
-
-        //average rating display
-        const avg = avgRatingMap[track.id];
-        let avgText;
-        if (avg !== null) {
-            avgText = parseFloat(avg).toFixed(1);
+                ratingValue.classList.add('flash');
+                setTimeout(() => {
+                    ratingValue.classList.remove('flash');
+                }, 500);
+            }
+    
+            stars.forEach(star => star.addEventListener('click', onStarClick));
         }
-        else {
-            avgText = "No rating";
-        }
-        ratingValue.textContent = avgText;
+    
+        console.log("Songs displayed successfully.");
 
+        musicContainer.classList.remove("fade-out");
+        musicContainer.classList.add("fade-in");
 
-       
-        // Add event listener for star rating
-        async function onStarClick(event) {
-            const rating = event.target.getAttribute('data-value');
+        setTimeout(() => {
+            musicContainer.classList.remove("fade-in");
+        },300); 
 
-            stars.forEach(star => {
-                star.classList.toggle('selected', star.getAttribute('data-value') <= rating);
-            });
+    }, 300); // Wait for fade-out to finish
 
-            await fetch('https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    trackId: track.id,
-                    trackName: track.name,
-                    rating: Number(rating),
-                    userId: spotifyUserId
-                })
-            });
-            
-            // Refresh average
-            const avgResponse = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating/average/${track.id}`);
-            const { averageRating } = await avgResponse.json();
-            ratingValue.textContent = parseFloat(averageRating).toFixed(1);
-
-            ratingValue.classList.add('flash');
-            setTimeout(() => {
-                ratingValue.classList.remove('flash');
-            }, 500);
-        }
-
-        stars.forEach(star => star.addEventListener('click', onStarClick));
-    }
-
-    console.log("Songs displayed successfully.");
+    
 }
 
 async function displayAverageRatings(songs) {
@@ -215,6 +241,9 @@ async function loadRatedSongs(spotifyUserId) {
     }
 
     try {
+            //when on the homepage display the sorting selection
+            document.getElementById("sort-options").style.display = "block";
+
             const ratingsRes = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/ratings/user/${spotifyUserId}`);
             const ratings = await ratingsRes.json();
 
@@ -244,7 +273,46 @@ async function loadRatedSongs(spotifyUserId) {
         });
         const averageRatingMap = await avgRes.json();
 
+
+
+        // add the user's rating and average rating to each song
+        for (const song of chunks) {
+            const userRating = ratings.find(r => r.trackId === song.id);
+            if (userRating) {
+                song.userRating = userRating.rating;
+            }
+            else {
+                song.userRating = 0;
+            }
+
+            const avgRating = averageRatingMap[song.id];
+            if (avgRating) {
+                song.averageRating = parseFloat(avgRating);
+            }
+            else {
+                song.averageRating = 0;
+            }
+        }
+
+        //sort by what the user wants
+        const sortSelect = document.getElementById("sort-select");
+        let selectedSort = "user"; //default
+
+        if (sortSelect) {
+            selectedSort = sortSelect.value;
+        }
+
+        if (selectedSort === "user") {
+            chunks.sort((a, b) => b.userRating - a.userRating);
+        }
+        else if (selectedSort === "average") {
+            chunks.sort((a,b) => b.averageRating - a.averageRating);
+        }
+
+        console.log("Sorting by:", selectedSort); 
+
         displaySongs(chunks, ratings, averageRatingMap);
+
     } catch (error) {
         console.error("Error loading rated songs:", error);
     };

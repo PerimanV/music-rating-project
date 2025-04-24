@@ -2,17 +2,16 @@
     --primary-color: #08080a;
     --secondary-color: #1153FC;
     --accent-color: #3a3985;
+    --card-bg: #1a1a1a;
 }
 
+
+/* fix for ugly atocomplete */
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 30px white inset !important;
-  box-shadow: 0 0 0 30px white inset !important;
-  -webkit-text-fill-color: #000 !important;
-  border-radius: inherit !important;
-}
-
-.shadow {
-    box-shadow: 5px 5px 10px black;
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: #000 !important;
+    border-radius: inherit !important;
 }
 
 .gradient {
@@ -21,11 +20,67 @@ input:-webkit-autofill {
 
 body {
     background-color: var(--primary-color);
-    font-family: sans-serif;
+    font-family: 'Inter', sans-serif;
+    padding: 1rem;
 }
+
+
+h3 {
+    color: var(--primary-color);
+}
+
 
 a {
     text-decoration: none;
+}
+
+#center-button {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(45deg, #1db954, #1ed760); 
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 250px; 
+    box-shadow: 10px 10px 30px #0a0a0a, -10px -10px 30px #1f1f1f;
+    transition: all 0.3s ease;
+}
+
+#login-button img {
+    width: 35px; 
+    height: 35px;
+    margin-right: 12px; 
+}
+
+#login-button:hover {
+    background: linear-gradient(45deg, #1ed760, #1db954); /* Reversed gradient on hover */
+    transform: scale(1.05); /* Slightly scale up for a button press effect */
+}
+
+#login-button:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(50, 205, 50, 0.8); /* Green focus outline */
+}
+
+#login-button:active {
+    transform: scale(0.98); /* Slightly shrink when clicked */
+}
+
+#homepage-load {
+    display: block;
 }
 
 #container {
@@ -52,12 +107,16 @@ a {
 
 .logo-wrapper {
     border-radius: 20px;
+    box-shadow: 5px 5px 10px black;
 }
 
 #logo {
-    width: 1vw;
-    height: 2vh;
+    width: auto;
+    max-width: 20px;
+    height: auto;
+    max-height: 20px;
     margin-bottom: -2px;
+    margin-right: 2px;
 }
 
 form {
@@ -78,6 +137,10 @@ input {
     padding: 6px 15px;
 }
 
+.search {
+    box-shadow: 5px 5px 10px black;
+}
+
 #search_btn {
     background: transparent;
     border: none;
@@ -91,59 +154,195 @@ input {
 }
 
 
-.album_cover {
-    width: 10vw;
-    height: 20vh;
-    border-radius: 20px;
+#sort-select {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    border: none;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    box-shadow: 5px 5px 10px black;
+}
+
+#sort-options {
+    margin: 1rem 0;
 }
 
 #music-container {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    padding: 1rem;
+    gap: 20px;
     justify-content: center;
     align-items: center;
-    gap: 20px;
 }
 
 .card {
     padding: 20px;
-    margin: 10px;
-    width: 200px;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 400px;
+    box-sizing: border-box;
     display: inline-block;
     text-align: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 10px 10px 30px #0a0a0a, -10px -10px 30px #1f1f1f;
     max-block-size: 400px;
     border-radius: 20px;
     padding: 10px;
 }
 
-.yt-link {
-    text-shadow: red 2px 2px 8px;
-    color: var(--primary-color);
+.album_cover {
+    width: 100%;
+    height: 80%o;
+    border-radius: 20px;
+}
+
+#artist-names {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    max-width: 100%;
+}
+
+.spotify-link {
+    text-decoration: none;
+    border-radius: 30px;
+    padding: 8px;
+    color: black;
+    background: linear-gradient(45deg, #1db954, #1ed760); 
+    box-shadow: 4px 6px 10px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.spotify-link:hover {
+    background-color: #32cd32;
+    transform: translateY(-2px);
+    box-shadow: 2px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.spotify-link:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(50, 205, 50, 0.8); /* Green outline for focus */
 }
 
 .star-rating {
     font-size: 2rem;
     cursor: pointer;
+    display: inline-block;
+    max-width: 100%;
+    margin-top: 10px;
 }
 
 .star {
     color: gray;
+    transition: color 0.2s ease, transform 0.3s ease;
+    max-width: 100%;
 }
 
-.star:hover, .star.selected {
+.star:hover,
+.star.selected {
     color: gold;
+    transform: scale(1.2);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
 }
 
-@keyframes flash {
-    0% { color: yellow; }
-    100% { color: transparent; }
-  }
-  
-  .flash {
-    animation: flash 0.5s ease;
-  }
+.star:focus {
+    outline: none;
+    box-shadow: 0 0 10px gold; 
+}
 
-h3  {
-    color: var(--primary-color);
+
+#avg-rating {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* average number flash on click */
+@keyframes flash {
+    0% {
+        color: yellow;
+    }
+
+    100% {
+        color: transparent;
+    }
+}
+
+.flash {
+    animation: flash 0.5s ease;
+}
+
+/* fade in when page loads or reloads */
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+.fade-in {
+    opacity: 1;
+    transition: opacity 0.3s ease-in;
+}
+
+
+@media (max-width: 480px) {
+    h3 {
+        font-size: 1rem;
+    }
+
+    .nav-container a {
+        font-size: 0.9rem;
+        padding: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .card {
+        max-width: 90vw;
+    }
+    
+    .rating-text {
+        font-size: 12px;
+     }
+}
+
+
+@media (max-width: 600px) {
+    #login-button {
+        width: 80%;
+        font-size: 14px;
+    }
+
+    .card {
+        width: 90%;
+    }
+
+    .nav-container {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    #login-button {
+        font-size: 14px;
+        width: 80%;
+        padding: 10px 20px;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
 }
