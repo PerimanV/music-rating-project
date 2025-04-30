@@ -4,17 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="./img/music.png"
+    <link rel="icon" href="./img/music.png">
 </head>
 <body>
+
+    <div id="center-button">
+        <button id="login-button" onclick="authenticateUser()"><img src="./img/spotify.png" alt="Spotify Logo">Login with Spotify</button>
+    </div>
     
+    
+    <div id="homepage-load">
+
         <div class="nav-container">
-            <a class="logo-wrapper shadow active" href="#" id="logo-title"><img src="./img/music.png" id="logo">Music</a>
-            <div class="search shadow"> 
+            <a class="logo-wrapper shadow active" href="https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev" id="logo-title"><img src="./img/music.png" id="logo"><span id="logo-text">Music</span></a>
+            <div id="sort-options">
+                <select id="sort-select">
+                    <option value="user">My Rating</option>
+                    <option value="average">Average Rating</option>
+                </select>
+            </div>
+            <div class="search"> 
                 <form role="search" id="search_form" class="gradient">
                     <input type="search" id="query" name="q" placeholder="Search...">
-                    <button type="submit" id="search_btn"><img src="./img/search.png"> </button>
+                    <button type="submit" class="search_btn"><img src="./img/search.png"> </button>
                 </form>
             </div>
         </div>
@@ -23,6 +39,9 @@
         <div class="row" id="music-container">
 
         </div>
+
+    </div>
+        
 
         <script src="script.js"></script>
 </body>
