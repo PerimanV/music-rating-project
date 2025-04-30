@@ -393,6 +393,10 @@ a {
     .search {
       order: 3;
     }
+
+    .no-ratingmsg {
+        padding-left: 0;
+    }
   }
   
 
