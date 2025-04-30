@@ -114,12 +114,10 @@ async function displaySongs(songs, ratings = [], avgRatingMap) {
 
         for (const track of songs) {
             const songCard = document.createElement("div");
-    
-    
-            console.log ("Track ID:", track.id); // Debugging
-    
+            songCard.classList.add("card", "gradient");  // Apply your card styles directly
+            songCard.id = track.id;
+            
             songCard.innerHTML = `
-            <div id="${track.id}" class="card shadow gradient">
                 <img src="${track.album.images[0].url}" class="album_cover" alt="Album Cover">
                 <h3>${track.name}</h3>
                 <p id="artist-names"><u>${track.artists.map(artist => artist.name).join(", ")}</u></p>
@@ -132,9 +130,8 @@ async function displaySongs(songs, ratings = [], avgRatingMap) {
                     <span class="star" data-value="5">&#9733;</span>
                 </div>
                 <p id="avg-rating">Average Rating: <span class="rating-value">0</span> stars</p>
-            </div>
             `;
-            musicContainer.appendChild(songCard,track); 
+            musicContainer.appendChild(songCard);
     
     
             //song rating
@@ -248,7 +245,7 @@ async function loadRatedSongs(spotifyUserId) {
             const ratings = await ratingsRes.json();
 
             if (!ratings.length) {
-                document.getElementById("music-container").innerHTML = "<p>You haven't rated any songs yet.</p>";
+                document.getElementById("music-container").innerHTML = `<p class="no-ratingmsg">You haven't rated any songs yet.</p>`;
                 return;
             };
 

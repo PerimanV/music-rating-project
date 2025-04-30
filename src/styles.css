@@ -27,6 +27,7 @@ body {
 
 h3 {
     color: var(--primary-color);
+    margin: 5px 0px;
 }
 
 
@@ -89,10 +90,12 @@ a {
 
 .nav-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    overflow: hidden;
+    padding: 1rem;
+    gap: 1rem;
+    position: relative;
     background-color: var(--primary-color);
     margin-bottom: 20px;
 }
@@ -106,46 +109,51 @@ a {
 }
 
 .logo-wrapper {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
     border-radius: 20px;
-    box-shadow: 5px 5px 10px black;
+    box-shadow: 1px 1px 2px var(--secondary-color);
 }
 
-#logo {
-    width: auto;
-    max-width: 20px;
-    height: auto;
-    max-height: 20px;
-    margin-bottom: -2px;
-    margin-right: 2px;
+#logo-text {
+    font-size: 1.5rem;
 }
 
-form {
+.logo-wrapper img {
+    height: 30px;
+}
+
+.search {
+    display: flex;
+}
+
+.search form {
     width: 300px;
     height: 43px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-items: center;
+    width: 100%;
+    padding: 0 10px;
 }
 
-input {
+.search input {
     all: unset;
+    flex: 1;
     font-size: 16px;
     color: black;
     height: 100%;
     width: 100%;
-    padding: 6px 15px;
+    padding: 0.5rem;
 }
 
-.search {
-    box-shadow: 5px 5px 10px black;
-}
-
-#search_btn {
+.search_btn {
     background: transparent;
     border: none;
     cursor: pointer;
-    padding: 5px;
+    padding: 0.5rem;
 }
 
 .search_btn img {
@@ -153,6 +161,9 @@ input {
     height: 20px;
 }
 
+#sort-options {
+    margin: 1rem 0;
+}
 
 #sort-select {
     display: flex;
@@ -161,19 +172,27 @@ input {
     margin: 0 auto;
     border: none;
     border-radius: 10px;
-    padding: 5px;
+    padding: 0.5rem;
     background-color: var(--primary-color);
     color: var(--secondary-color);
-    box-shadow: 5px 5px 10px black;
+    box-shadow: 1px 1px 5px var(--secondary-color);
+    font-size: 1.1rem;
 }
 
-#sort-options {
-    margin: 1rem 0;
+
+/* you havent rated any songs yet */
+.no-ratingmsg {
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 20px;
+    text-shadow: 1px 1px 1px var(--accent-color);
+
 }
 
 #music-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     padding: 1rem;
     gap: 20px;
     justify-content: center;
@@ -196,9 +215,15 @@ input {
     padding: 10px;
 }
 
+.card:hover , .card:focus {
+    box-shadow: 5px 5px 15px #0a0a0a, -5px -5px 15px #1f1f1f;
+    transform: scale(1.02);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
 .album_cover {
-    width: 100%;
-    height: 80%o;
+    width: 70%;
+    height: 50%;
     border-radius: 20px;
 }
 
@@ -233,11 +258,11 @@ input {
 }
 
 .star-rating {
-    font-size: 2rem;
+    font-size: 2.5rem;
     cursor: pointer;
     display: inline-block;
     max-width: 100%;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .star {
@@ -265,6 +290,7 @@ input {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
+    margin-top: 5px;
 }
 
 /* average number flash on click */
@@ -310,39 +336,64 @@ input {
     .card {
         max-width: 90vw;
     }
+
+    .album_cover {
+        max-width: 60%;
+        max-height: 50%;
+    }
     
     .rating-text {
         font-size: 12px;
      }
 }
 
-
-@media (max-width: 600px) {
-    #login-button {
-        width: 80%;
-        font-size: 14px;
-    }
-
-    .card {
-        width: 90%;
-    }
-
+@media (max-width: 767px) {
     .nav-container {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      position: static;
     }
-}
-
-@media (max-width: 768px) {
-    #login-button {
-        font-size: 14px;
-        width: 80%;
-        padding: 10px 20px;
+  
+    .logo-wrapper {
+      justify-content: center;
     }
-
-    .card {
-        padding: 10px;
+  
+    .search {
+      order: 2;
+      width: 100%;
+      max-width: 300px;
     }
+  
+    #sort-options {
+      order: 3;
+      width: 100%;
+      max-width: 300px;
+      text-align: center;
+      margin-top: 0;
+    }
+  }
 
-}
+  @media (min-width: 768px) {
+    .nav-container {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+  
+    .logo-wrapper {
+      order: 1;
+    }
+  
+    #sort-options {
+      order: 2;
+    }
+  
+    .search {
+      order: 3;
+    }
+  }
+  
+
+  

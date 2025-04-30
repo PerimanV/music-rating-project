@@ -15,7 +15,12 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 app.use(express.static(__dirname));
-app.use(cors());
+
+app.use(cors({
+  origin: 'https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/',
+  methods: ['GET', 'POST', 'DELETE'], 
+}));
+
 app.use(bodyParser.json());
 
 
@@ -67,6 +72,23 @@ app.get('/api/ratings/user/:userId', async (req,res) => {
         res.status(500).json({ error: 'Database error' });
       }
 
+});
+
+//delete all ratings route
+app.delete('/api/ratings/delete-all', async (req, res) => {
+  try {
+    
+    //authorization check
+    if (process.env.NODE_ENV !== 'development') {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+
+    await Rating.deleteMany({});
+    res.status(200).json({ message: 'All ratings deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 
