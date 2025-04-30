@@ -1,5 +1,4 @@
-# music-rating
- # Music app that lets you preview and rate songs using the spotify api #
+# Music app that lets you preview and rate songs using the spotify api #
  
  I got the idea fot this after me and a friend were having a debate about song ratings for a few songs 😁
 
