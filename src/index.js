@@ -17,7 +17,7 @@ const app = express();
 app.use(express.static(__dirname));
 
 app.use(cors({
-  origin: 'https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/',
+  origin: 'https://music-rate.onrender.com/',
   methods: ['GET', 'POST', 'DELETE'], 
 }));
 

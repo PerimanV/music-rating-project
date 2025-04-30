@@ -1,5 +1,5 @@
 const clientId = "b3f43e0d8e6c4c6cbe86ed9abed26e04";
-const redirectUri = "https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/"; // Replace with your redirect URI
+const redirectUri = "https://music-rate.onrender.com/"; // Replace with your redirect URI
 const authEndpoint = "https://accounts.spotify.com/authorize";
 const scopes = ["user-read-private", "user-read-email"];
 
@@ -86,7 +86,7 @@ async function searchSongs(query) {
         const songs = data.tracks.items;
 
         //fetch rating for user for each song
-        const ratingRes = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/ratings/user/${spotifyUserId}`);
+        const ratingRes = await fetch(`https://music-rate.onrender.com/api/ratings/user/${spotifyUserId}`);
         const ratings = await ratingRes.json();
 
 
@@ -174,7 +174,7 @@ async function displaySongs(songs, ratings = [], avgRatingMap) {
                     star.classList.toggle('selected', star.getAttribute('data-value') <= rating);
                 });
     
-                await fetch('https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating', {
+                await fetch('https://music-rate.onrender.com/api/rating', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -186,7 +186,7 @@ async function displaySongs(songs, ratings = [], avgRatingMap) {
                 });
                 
                 // Refresh average
-                const avgResponse = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating/average/${track.id}`);
+                const avgResponse = await fetch(`https://music-rate.onrender.com/api/rating/average/${track.id}`);
                 const { averageRating } = await avgResponse.json();
                 ratingValue.textContent = parseFloat(averageRating).toFixed(1);
     
@@ -218,7 +218,7 @@ async function displaySongs(songs, ratings = [], avgRatingMap) {
 async function displayAverageRatings(songs) {
 
     const trackIds = songs.map(track => track.id);
-    const avgRes = await fetch('https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating/averages/bulk', {
+    const avgRes = await fetch('https://music-rate.onrender.com/api/rating/averages/bulk', {
 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -241,7 +241,7 @@ async function loadRatedSongs(spotifyUserId) {
             //when on the homepage display the sorting selection
             document.getElementById("sort-options").style.display = "block";
 
-            const ratingsRes = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/ratings/user/${spotifyUserId}`);
+            const ratingsRes = await fetch(`https://music-rate.onrender.com/api/ratings/user/${spotifyUserId}`);
             const ratings = await ratingsRes.json();
 
             if (!ratings.length) {
@@ -263,7 +263,7 @@ async function loadRatedSongs(spotifyUserId) {
                 chunks.push(...chunkData.tracks);
         }
 
-        const avgRes = await fetch(`https://curly-succotash-jj55x464g9r4hw64-5500.app.github.dev/api/rating/averages/bulk`, {
+        const avgRes = await fetch(`https://music-rate.onrender.com/api/rating/averages/bulk`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ trackIds })
