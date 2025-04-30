@@ -67,17 +67,17 @@ a {
 }
 
 #login-button:hover {
-    background: linear-gradient(45deg, #1ed760, #1db954); /* Reversed gradient on hover */
-    transform: scale(1.05); /* Slightly scale up for a button press effect */
+    background: linear-gradient(45deg, #1ed760, #1db954); 
+    transform: scale(1.05);
 }
 
 #login-button:focus {
     outline: none;
-    box-shadow: 0 0 8px rgba(50, 205, 50, 0.8); /* Green focus outline */
+    box-shadow: 0 0 8px rgba(50, 205, 50, 0.8);
 }
 
 #login-button:active {
-    transform: scale(0.98); /* Slightly shrink when clicked */
+    transform: scale(0.98); 
 }
 
 #homepage-load {
@@ -254,7 +254,7 @@ a {
 
 .spotify-link:focus {
     outline: none;
-    box-shadow: 0 0 8px rgba(50, 205, 50, 0.8); /* Green outline for focus */
+    box-shadow: 0 0 8px rgba(50, 205, 50, 0.8);
 }
 
 .star-rating {

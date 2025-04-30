@@ -31,7 +31,6 @@ async function fetchUserProfile(token) {
         }
 
         const data = await response.json();
-        console.log("User Profile:", data); // Debugging
 
         return data.id; // Return user ID
     }
@@ -54,7 +53,6 @@ else {
     fetchUserProfile(accessToken)
         .then(userId => {
             spotifyUserId = userId;
-            console.log("Spotify User ID:", spotifyUserId); // Debugging
             loadRatedSongs(spotifyUserId); // Load rated songs after authentication
             document.getElementById("sort-select").addEventListener("change", () => {
                 loadRatedSongs(spotifyUserId);
@@ -114,7 +112,7 @@ async function displaySongs(songs, ratings = [], avgRatingMap) {
 
         for (const track of songs) {
             const songCard = document.createElement("div");
-            songCard.classList.add("card", "gradient");  // Apply your card styles directly
+            songCard.classList.add("card", "gradient");
             songCard.id = track.id;
             
             songCard.innerHTML = `
@@ -210,7 +208,7 @@ async function displaySongs(songs, ratings = [], avgRatingMap) {
             musicContainer.classList.remove("fade-in");
         },300); 
 
-    }, 300); // Wait for fade-out to finish
+    }, 300);
 
     
 }
@@ -315,9 +313,9 @@ async function loadRatedSongs(spotifyUserId) {
     };
 };
 
-// search
+// search functionality
 document.getElementById("search_form").addEventListener("submit", (event) => {
-    event.preventDefault(); // Prevent form submission
+    event.preventDefault();
     const query = document.getElementById("query").value.trim();
-    searchSongs(query); // Call the search function with the query
+    searchSongs(query);
 });
