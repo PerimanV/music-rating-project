@@ -1,4 +1,6 @@
 # Music app that lets you preview and rate songs using the spotify api #
+
+Try it yourself: https://music-rate.onrender.com/
  
  I got the idea fot this after me and a friend were having a debate about song ratings for a few songs 😁
 
