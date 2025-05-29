@@ -8,7 +8,7 @@ Features:
 
 - Login Using spotify
 - Search for songs
-- Listen to the a song directly on spotify
+- Listen to the song directly on spotify
 - Rate songs
 - View average rating of each song (average rating from all users that have rated it)
 - View all your rated songs in the homepage and the rating that you set
