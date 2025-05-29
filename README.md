@@ -2,7 +2,7 @@
 
 Try it yourself: https://music-rate.onrender.com/
  
- I got the idea fot this after me and a friend were having a debate about song ratings for a few songs 😁
+ I got the idea for this after me and a friend were having a debate about song ratings for a few songs 😁
 
 Features:
 
